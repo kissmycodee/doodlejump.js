@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #87CEEB; /* Fallback background */
+}
+canvas {
+    display: block;
+    margin: auto;
+    border: 1px solid black;
+}

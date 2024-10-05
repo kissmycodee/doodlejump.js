@@ -1,0 +1,237 @@
+// RequestAnimFrame: a browser API for getting smooth animations
+// Return the appropriate requestAnimationFrame function based on browser support
+// For older WebKit browsers
+// For Firefox
+// For Opera
+// For Internet Explorer
+// Fallback for browsers that do not support requestAnimationFrame
+// Call callback at ~60 FPS
+// Get the canvas element and its 2D context for rendering
+// Set the width and height of the game canvas
+// Assign the size to the canvas
+// Variables for the game
+// Array to hold platforms
+// Image to be used in the game
+// Player object will be created later
+// Total number of platforms to generate
+// Y-coordinate position for the platforms
+// Gravity effect on the player
+// Animation loop variable
+// Flag for game state management
+// Variable for menu-related loops
+// Counter for broken platforms
+// Direction of the player (left or right)
+// Player's score
+// Boolean to check if it's the first run of the game
+// Base object constructor
+// Base height
+// Base width equal to the canvas width
+// Sprite clipping values for the base
+// Sprite X position
+// Sprite Y position
+// Width of the sprite
+// Height of the sprite
+// Movement tracking
+// Positioned at the bottom of the canvas
+// Method to draw the base
+// Draw the base image on the canvas
+// Catch any errors during drawing
+// Create an instance of the Base object
+// Player object constructor
+// Vertical velocity for jumping
+// Horizontal velocity
+// Flag for left movement
+// Flag for right movement
+// Flag for player's death state
+// Width of the player sprite
+// Height of the player sprite
+// Sprite clipping values for the player
+// Sprite X position
+// Sprite Y position
+// Width of the sprite
+// Height of the sprite
+// Initial direction of the player
+// Set initial position of the player in the center of the canvas
+// Function to draw the player
+// Adjust sprite Y position based on the player's direction
+// When landing right
+// When landing left
+// Draw the player image on the canvas
+// Catch any errors during drawing
+// Function for the player to jump
+// Set upward velocity
+// Function for a higher jump
+// Set more upward velocity
+// Platform class constructor
+// Width of the platform
+// Height of the platform
+// Randomly position platform within the game width
+// Vertical position
+// Update the position for the next platform
+// Flag for specific platform states
+// State of the platform (e.g., normal or broken)
+// Sprite clipping values for the platform
+// Sprite X position
+// Sprite Y position
+// Width of the sprite
+// Height of the sprite
+// Function to draw the platform
+// Adjust sprite Y position based on the platform type and state
+// Normal platform
+// Moving platform
+// Breakable platform (invisible)
+// Breakable platform (after breaking)
+// Vanishable platform (visible)
+// Vanishable platform (invisible)
+// Determine platform types based on score thresholds
+// Moving & breakable platforms available
+// More breakable and moving
+// Fewer moving platforms
+// Mostly normal with few moving
+// Mix of normal and one moving
+// Default to normal platform
+// Randomly select a platform type
+// Prevent two consecutive breakable platforms to avoid blocking player movement
+// Increment broken counter
+// Change to a normal platform
+// Reset broken counter
+// Track movements
+// Initial horizontal velocity for moving platforms
+// Generate the initial platforms
+// Create and add new platforms to the array
+// Broken platform substitute object constructor
+// Height of the substitute platform
+// Width of the substitute platform
+// Initial X position
+// Initial Y position
+// Sprite clipping values for the substitute platform
+// Sprite X position
+// Sprite Y position
+// Width of the sprite
+// Height of the sprite
+// Initial visibility state
+// Function to draw the substitute platform
+// Draw the substitute platform only if it is set to appear
+// Do nothing if not visible
+// Catch any errors during drawing
+// Create an instance of the broken platform substitute
+// Spring class constructor
+// Initial X position
+// Initial Y position
+// Width of the spring
+// Height of the spring
+// Sprite clipping values for the spring
+// Sprite X position
+// Sprite Y position
+// Width of the sprite
+// Height of the sprite
+// Initial state of the spring
+// Function to draw the spring
+// Adjust sprite Y position based on the spring state
+// Normal state
+// Active state
+// Draw the spring image on the canvas
+// Catch any errors during drawing
+// Create an instance of the spring
+// Initialize game function
+// Variables for the game
+// Initial direction
+// Counter for jumps
+// Set firstRun to false after initialization
+// Function for clearing the canvas in each consecutive frame
+// Player related calculations and functions
+// Update player direction based on movement
+// If the player is falling
+// Add keyboard controls for movement
+// Left arrow key
+// Set direction to left
+// Set moving left flag
+// Right arrow key
+// Set direction to right
+// Set moving right flag
+// Spacebar for jump/init/reset
+// If this is the first run
+// Initialize the game
+// Reset the game
+// Handle key release events
+// Left arrow key
+// Set direction to left
+// Clear moving left flag
+// Right arrow key
+// Set direction to right
+// Clear moving right flag
+// Accelerations produced when the user holds the keys
+// Update player x position based on vx
+// Apply left acceleration
+// Update player x position based on vx
+// Gradually reduce vx when not moving left
+// Update player x position based on vx
+// Apply right acceleration
+// Update player x position based on vx
+// Gradually reduce vx when not moving right
+// Speed limits to prevent excessive movement
+// Cap maximum horizontal velocity
+// Cap minimum horizontal velocity
+// Jump the player when it hits the base
+// Game over if player goes below the bottom
+// Make the player wrap around the edges of the canvas
+// Apply gravity effect when the player is in the upper half of the canvas
+// Move platforms up while player jumps
+// Recreate platforms that move off screen
+// Create a new platform
+// Position it just above the moved platform
+// Move base along with player
+// Check for collisions between the player and platforms
+// Trigger game over if player is dead
+// Check for collision with platforms
+// Handle collaborative interactions based on type
+// Breakable platform
+// Set flag to indicate broken state
+// Vanishable platform
+// Jump when hitting this platform
+// Skip further handling if already broken
+// Normal jump behavior for solid platforms
+// Check for collision with spring
+// Set spring to active state
+// Make player jump higher
+// Update the score on the screen
+// Handle game over state
+// Move platforms upwards on game over
+// If player falls below midpoint
+// Adjust player position slightly
+// Stop vertical velocity
+// Mark as dead if above midpoint
+// Show game over menu
+// Hide score
+// Set player dead flag
+// Generate social sharing links with current score
+// For Twitter sharing
+// For Facebook sharing
+// Function to update everything in each animation frame
+// Placeholder function, does nothing
+// Main animation loop
+// Call the update function
+// Start the main menu loop
+// Begin the main menu loop
+// Hides the main menu by setting its zIndex to -1
+// Shows the game over menu by setting its zIndex to 1 and making it visible
+// Hides the game over menu by setting its zIndex to -1 and visibility to hidden
+// Show the scoreboard by setting its zIndex to 1
+// Hide the scoreboard by setting its zIndex to -1
+// Function to handle player jumping and related logic
+// Update player y position with vertical velocity
+// Apply gravity to vertical velocity
+// Jump when the player is in a specific area
+// Updating player's direction based on input
+// Adding keyboard controls
+// Handle key release events
+// Apply left movement acceleration
+// Update x position with current velocity
+// Apply right movement acceleration
+// Update x position with current velocity
+// Handle jump logic
+// Handle player wrapping behavior at the edges
+// Draw the player
+// Function to clear canvas and manage player jumping
+// Start the main menu loop
+ 
