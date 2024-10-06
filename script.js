@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Load images
+// Load images (make sure these paths are correct)
 const platformImg = new Image();
 platformImg.src = 'img/platform.png';
 
@@ -36,7 +36,7 @@ class Player {
     }
 
     update() {
-        // Update Y position and apply gravity
+        // Apply gravity to the player
         this.y += this.velocityY;
         this.velocityY += gravity;
 
@@ -81,6 +81,7 @@ class Player {
         if (this.y + this.height > canvas.height) {
             this.y = canvas.height - this.height;
             this.velocityY = 0;
+            isGameOver = true; // Set game over state
         }
     }
 
@@ -91,6 +92,17 @@ class Player {
             this.y + this.height <= platform.y + platform.height &&
             this.y + this.height + this.velocityY >= platform.y
         );
+    }
+
+    move(deltaX) {
+        this.x += deltaX;
+
+        // Ensure player stays within the canvas bounds
+        if (this.x < 0) {
+            this.x = 0;
+        } else if (this.x + this.width > canvas.width) {
+            this.x = canvas.width - this.width;
+        }
     }
 }
 
@@ -160,41 +172,27 @@ function initTiltControls() {
 let tiltSensitivity = 15; // Adjust sensitivity for how much tilt affects movement
 
 function handleOrientation(event) {
-    // Check for gamma (left-right tilt)
     const tilt = event.gamma; // Values range from -90 (left) to +90 (right)
+    let deltaX = 0;
 
+    // Determine direction based on tilt
     if (tilt > tiltSensitivity) {
-        player.x += 5; // Move right
+        deltaX = player.speed || 5; // Move right
     } else if (tilt < -tiltSensitivity) {
-        player.x -= 5; // Move left
+        deltaX = -(player.speed || 5); // Move left
     }
 
-    keepPlayerWithinBounds(); // Ensure player stays within bounds
-}
-
-// Keep player within canvas bounds
-function keepPlayerWithinBounds() {
-    if (player.x < 0) {
-        player.x = 0;
-    } else if (player.x + player.width > canvas.width) {
-        player.x = canvas.width - player.width;
-    }
+    // Move the player based on tilt
+    player.move(deltaX);
 }
 
 // Handle Key Events
 window.addEventListener('keydown', (event) => {
     if (!isGameOver) {
         if (event.key === 'ArrowLeft') {
-            player.x -= 15;
+            player.move(-15);
         } else if (event.key === 'ArrowRight') {
-            player.x += 15;
-        }
-
-        // Allow wrapping around
-        if (player.x < -player.width) {
-            player.x = canvas.width;
-        } else if (player.x > canvas.width) {
-            player.x = 0;
+            player.move(15);
         }
     } else if (event.key === ' ') {
         init(); // Restart the game
