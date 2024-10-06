@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Load images (make sure these paths are correct)
+// Load images (make sure these paths are correct).
 const platformImg = new Image();
 platformImg.src = 'img/platform.png';
 
@@ -18,7 +18,7 @@ let score = 0;
 let isGameOver = false;
 
 const gravity = 0.5;
-const jumpForce = -10; // Constant for jump force
+const jumpForce = -10; // Force applied when jumping
 
 // Player Class
 class Player {
@@ -27,7 +27,7 @@ class Player {
         this.height = 30;
         this.x = canvas.width / 2 - this.width / 2;
         this.y = startY - this.height; // Start from the lowest platform
-        this.velocityY = 0;  // Initial velocity
+        this.velocityY = 0; // Initial vertical velocity
         this.image = doodlerImg;
     }
 
@@ -36,48 +36,47 @@ class Player {
     }
 
     update() {
-        // Apply gravity to the player
+        // Apply gravity
         this.y += this.velocityY;
         this.velocityY += gravity;
 
-        // Ensure player wraps around the screen
+        // Screen wrapping
         if (this.x < -this.width) {
             this.x = canvas.width;
         } else if (this.x > canvas.width) {
             this.x = 0;
         }
 
-        // Check for collision with platforms and handle jumping
+        // Check for collision with platforms
         let onGround = false;
         platforms.forEach(platform => {
             if (this.isCollidingWith(platform)) {
-                // Only apply jump force if player is falling and hits a platform
-                if (this.velocityY >= 0) {
+                if (this.velocityY >= 0) { // Only jump if falling
                     this.velocityY = jumpForce; // Jump
-                    onGround = true; // Indicate the player is on a platform
+                    onGround = true; // Player is on a platform
                     score += 10; // Increase score when landing on a platform
                 }
             }
         });
 
         // Remove platforms that have passed off the screen
-        for (let i = 0; i < platforms.length; i++) {
-            if (platforms[i].y > canvas.height) {
-                platforms.splice(i, 1);
-                i--; // Adjust index after removal
+        platforms.forEach((platform, index) => {
+            if (platform.y > canvas.height) {
+                platforms.splice(index, 1);
             }
-        }
+        });
 
-        // If the player climbs higher than half of the canvas height, move platforms downward
+        // Climb logic: If the player climbs higher than half of the canvas height,
+        // move platforms downward
         if (this.y < canvas.height / 2) {
             platforms.forEach(platform => {
                 platform.y += 5; // Move platforms down
             });
-            this.y = canvas.height / 2; // Keep player in the middle
+            this.y = canvas.height / 2; // Keep player at center height
             score += 1; // Increment score for climbing high
         }
 
-        // Prevent going beyond the canvas height
+        // Game over condition
         if (this.y + this.height > canvas.height) {
             this.y = canvas.height - this.height;
             this.velocityY = 0;
@@ -94,10 +93,9 @@ class Player {
         );
     }
 
+    // Move the player left and right based on tilt input
     move(deltaX) {
         this.x += deltaX;
-
-        // Ensure player stays within the canvas bounds
         if (this.x < 0) {
             this.x = 0;
         } else if (this.x + this.width > canvas.width) {
@@ -127,11 +125,11 @@ function init() {
     player = new Player(getLowestPlatformY()); // Set player starting position on the lowest platform
     score = 0;
     isGameOver = false;
-    initTiltControls(); // Initialize tilt controls
+    initAccelerometerControls(); // Initialize accelerometer controls
     requestAnimationFrame(gameLoop);
 }
 
-// Create Random Platforms
+// Function to create random platforms
 function createPlatforms() {
     platforms.length = 0; // Clear existing platforms
     for (let i = 0; i < 5; i++) {
@@ -152,9 +150,8 @@ function getLowestPlatformY() {
     return lowestY;
 }
 
-// Initialize Tilt Controls
-function initTiltControls() {
-    // Request permission to access device motion and orientation events
+// Initialize Accelerometer Controls
+function initAccelerometerControls() {
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
         DeviceMotionEvent.requestPermission().then(response => {
             if (response === 'granted') {
@@ -164,40 +161,26 @@ function initTiltControls() {
             }
         }).catch(console.error);
     } else {
-        // Non iOS 13+ devices automatically allow access
         window.addEventListener('deviceorientation', handleOrientation, true);
     }
 }
 
-let tiltSensitivity = 15; // Adjust sensitivity for how much tilt affects movement
+let sensitivity = 15; // Change this value to adjust how sensitive movement is
 
 function handleOrientation(event) {
     const tilt = event.gamma; // Values range from -90 (left) to +90 (right)
     let deltaX = 0;
 
     // Determine direction based on tilt
-    if (tilt > tiltSensitivity) {
-        deltaX = player.speed || 5; // Move right
-    } else if (tilt < -tiltSensitivity) {
-        deltaX = -(player.speed || 5); // Move left
+    if (tilt > sensitivity) {
+        deltaX = 5; // Move right
+    } else if (tilt < -sensitivity) {
+        deltaX = -5; // Move left
     }
 
     // Move the player based on tilt
     player.move(deltaX);
 }
-
-// Handle Key Events
-window.addEventListener('keydown', (event) => {
-    if (!isGameOver) {
-        if (event.key === 'ArrowLeft') {
-            player.move(-15);
-        } else if (event.key === 'ArrowRight') {
-            player.move(15);
-        }
-    } else if (event.key === ' ') {
-        init(); // Restart the game
-    }
-});
 
 // Game Loop
 function gameLoop() {
@@ -210,10 +193,9 @@ function gameLoop() {
 
     player.update();
     player.draw();
-    
     platforms.forEach(platform => platform.draw());
 
-    // Update score based on player's Y position and landing
+    // Update score display
     ctx.fillStyle = 'black';
     ctx.font = '16px Arial';
     ctx.fillText('Score: ' + score, 10, 20);
