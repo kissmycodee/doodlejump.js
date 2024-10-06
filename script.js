@@ -129,13 +129,6 @@ function createPlatforms() {
     }
 }
 
-// Function to create a new platform
-function createNewPlatform() {
-    const x = Math.random() * (canvas.width - 100);
-    const y = Math.random() * (canvas.height - 100); // Adjusted to create new platforms higher up
-    platforms.push(new Platform(x, y));
-}
-
 // Function to get the lowest platform Y coordinate
 function getLowestPlatformY() {
     let lowestY = canvas.height; // Start with the bottom of the canvas
@@ -149,17 +142,25 @@ function getLowestPlatformY() {
 
 // Initialize Tilt Controls
 function initTiltControls() {
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener('deviceorientation', handleOrientation, true);
+    // Request permission to access device motion and orientation events
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission().then(response => {
+            if (response === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            } else {
+                console.error("Device orientation permission not granted");
+            }
+        }).catch(console.error);
     } else {
-        console.log("Device Orientation not supported");
+        // Non iOS 13+ devices automatically allow access
+        window.addEventListener('deviceorientation', handleOrientation, true);
     }
 }
 
 let tiltSensitivity = 15; // Adjust sensitivity for how much tilt affects movement
 
 function handleOrientation(event) {
-    // Get gamma (left-right tilt)
+    // Check for gamma (left-right tilt)
     const tilt = event.gamma; // Values range from -90 (left) to +90 (right)
 
     if (tilt > tiltSensitivity) {
