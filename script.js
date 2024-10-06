@@ -18,7 +18,7 @@ let score = 0;
 let isGameOver = false;
 
 const gravity = 0.5;
-const jumpForce = -12; // Adjusted for higher jump
+const jumpForce = -10; // Constant for jump force
 
 // Player Class
 class Player {
@@ -48,11 +48,13 @@ class Player {
         }
 
         // Check for collision with platforms and handle jumping
+        let onGround = false;
         platforms.forEach(platform => {
             if (this.isCollidingWith(platform)) {
                 // Only apply jump force if player is falling and hits a platform
                 if (this.velocityY >= 0) {
                     this.velocityY = jumpForce; // Jump
+                    onGround = true; // Indicate the player is on a platform
                     score += 10; // Increase score when landing on a platform
                 }
             }
@@ -73,11 +75,6 @@ class Player {
             });
             this.y = canvas.height / 2; // Keep player in the middle
             score += 1; // Increment score for climbing high
-        }
-
-        // Create new platforms if they fall below a certain threshold
-        if (platforms.length < 5) { // Ensure at least 5 platforms needed
-            createNewPlatform(); // Create new platform
         }
 
         // Prevent going beyond the canvas height
@@ -118,15 +115,16 @@ function init() {
     player = new Player(getLowestPlatformY()); // Set player starting position on the lowest platform
     score = 0;
     isGameOver = false;
+    initTiltControls(); // Initialize tilt controls
     requestAnimationFrame(gameLoop);
 }
 
 // Create Random Platforms
 function createPlatforms() {
     platforms.length = 0; // Clear existing platforms
-    for (let i = 0; i < 10; i++) { // Increased number of platforms
+    for (let i = 0; i < 5; i++) {
         const x = Math.random() * (canvas.width - 100);
-        const y = Math.random() * (canvas.height - (i * 80) + 60); // Ensure enough vertical spacing
+        const y = Math.random() * (canvas.height - (i * 100) + 60);
         platforms.push(new Platform(x, y));
     }
 }
@@ -134,7 +132,7 @@ function createPlatforms() {
 // Function to create a new platform
 function createNewPlatform() {
     const x = Math.random() * (canvas.width - 100);
-    const y = Math.random() * (canvas.height / 1.5); // Create new platforms higher up
+    const y = Math.random() * (canvas.height - 100); // Adjusted to create new platforms higher up
     platforms.push(new Platform(x, y));
 }
 
@@ -147,6 +145,39 @@ function getLowestPlatformY() {
         }
     });
     return lowestY;
+}
+
+// Initialize Tilt Controls
+function initTiltControls() {
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', handleOrientation, true);
+    } else {
+        console.log("Device Orientation not supported");
+    }
+}
+
+let tiltSensitivity = 15; // Adjust sensitivity for how much tilt affects movement
+
+function handleOrientation(event) {
+    // Get gamma (left-right tilt)
+    const tilt = event.gamma; // Values range from -90 (left) to +90 (right)
+
+    if (tilt > tiltSensitivity) {
+        player.x += 5; // Move right
+    } else if (tilt < -tiltSensitivity) {
+        player.x -= 5; // Move left
+    }
+
+    keepPlayerWithinBounds(); // Ensure player stays within bounds
+}
+
+// Keep player within canvas bounds
+function keepPlayerWithinBounds() {
+    if (player.x < 0) {
+        player.x = 0;
+    } else if (player.x + player.width > canvas.width) {
+        player.x = canvas.width - player.width;
+    }
 }
 
 // Handle Key Events
